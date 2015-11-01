@@ -12,7 +12,7 @@ require_once __DIR__ . '/core/Router.php';
 // Include configuration and models
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/core/Model.php';
-require_once __DIR__ . '/model/Posts.php';
+require_once __DIR__ . '/model/Post.php';
 
 // Create a Router
 $router = new \Bramus\Router\Router();

@@ -7,11 +7,10 @@ if (php_sapi_name() === 'cli-server' && is_file($filename)) {
 }
 
 // Include the Router class
-// @note: it's recommended to just use the composer autoloader when working with other packages too
-require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/core/Router.php';
 
-// Include the Database connection and models
+// Include configuration and models
+require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/core/Model.php';
 require_once __DIR__ . '/model/Posts.php';
 
@@ -29,71 +28,26 @@ $router->before('GET', '/.*', function () {
 	header('Content-Type: application/json');
 });
 
-// Static route: / (homepage)
-$router->get('/', function () {
-	echo '';
-});
+// // Static route: / (homepage)
+// $router->get('/', function () {
+// 	echo '';
+// });
 
-// Static route: /hello
-$router->get('/posts', function () {
-	$postModel = new Posts();
-	$posts = $postModel->getAllPosts();
-});
+$router->mount('/post', function () use ($router) {
 
-// Dynamic route: /hello/name
-$router->get('/hello/(\w+)', function ($name) {
-	echo 'Hello ' . htmlentities($name);
-});
-
-// Dynamic route: /ohai/name/in/parts
-$router->get('/ohai/(.*)', function ($url) {
-	echo 'Ohai ' . htmlentities($url);
-});
-
-// Dynamic route with (successive) optional subpatterns: /blog(/year(/month(/day(/slug))))
-$router->get('/blog(/\d{4}(/\d{2}(/\d{2}(/[a-z0-9_-]+)?)?)?)?', function ($year = null, $month = null, $day = null, $slug = null) {
-	if (!$year) {
-		echo 'Blog overview';
-		return;
-	}
-	if (!$month) {
-		echo 'Blog year overview (' . $year . ')';
-		return;
-	}
-	if (!$day) {
-		echo 'Blog month overview (' . $year . '-' . $month . ')';
-		return;
-	}
-	if (!$slug) {
-		echo 'Blog day overview (' . $year . '-' . $month . '-' . $day . ')';
-		return;
-	}
-	echo 'Blogpost ' . htmlentities($slug) . ' detail (' . $year . '-' . $month . '-' . $day . ')';
-});
-
-// Subrouting
-$router->mount('/movies', function () use ($router) {
-
-	// will result in '/movies'
+	// Route: /posts (fetch all posts)
 	$router->get('/', function () {
-		echo 'movies overview';
+		$postModel = new Posts();
+		$posts = $postModel->getAllPosts();
+		echo json_encode($posts);
 	});
 
-	// will result in '/movies'
-	$router->post('/', function () {
-		echo 'add movie';
-	});
-
-	// will result in '/movies/id'
+	// Route: /post/id (fetch a single post)
 	$router->get('/(\d+)', function ($id) {
-		echo 'movie id ' . htmlentities($id);
+		$postModel = new Posts();
+		$post = $postModel->getPost($id);
+		echo json_encode($post);
 	});
-
-	// will result in '/movies/id'
-	$router->put('/(\d+)', function ($id) {
-		echo 'Update movie id ' . htmlentities($id);
-	});
-
 });
 
 // Thunderbirds are go!

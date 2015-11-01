@@ -23,6 +23,9 @@
         echo '404, route not found!';
     });
 
+    // Custom DB connection
+    $router->setDb($db);
+
     // Before Router Middleware
     $router->before('GET', '/.*', function () {
         header('Content-Type: application/json');
@@ -35,7 +38,7 @@
 
     // Static route: /hello
     $router->get('/posts', function () {
-        $postModel = new Posts($db);
+        $postModel = new Posts($this->getDb());
         $posts = $postModel->getAllPosts();
     });
 

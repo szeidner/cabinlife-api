@@ -25,7 +25,7 @@ class Posts extends Model {
 			'totalViews, favorites, latitude, longitude, summary, body) VALUES '+
 			'(:feedsource_id, :title, :publishedAt, :image, :totalView, :favorites, '+
 			':latitude, :longitude, :summary, :body)';
-		$stmt = $this->db->prepare($sql)
+		$stmt = $this->db->prepare($sql);
 		$stmt->execute(array(':feedsource_id' => $post->feedsource_id,
 			':feedsource_id' => $post->feedsource_id,
 			':title' => $post->title,

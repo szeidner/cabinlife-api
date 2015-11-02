@@ -1,5 +1,5 @@
 <?php
-class Posts extends Model {
+class FeedSource extends Model {
 
 	public function __construct() {
 		parent::__construct("FeedSource");

@@ -1,5 +1,5 @@
 <?php
-class Posts extends Model {
+class Post extends Model {
 
 	public function __construct() {
 		parent::__construct("Post");
@@ -26,16 +26,16 @@ class Posts extends Model {
 			'(:feedsource_id, :title, :publishedAt, :image, :totalView, :favorites, '+
 			':latitude, :longitude, :summary, :body)';
 		$stmt = $this->db->prepare($sql);
-		$stmt->execute(array(':feedsource_id' => $post->feedsource_id,
-			':feedsource_id' => $post->feedsource_id,
-			':title' => $post->title,
-			':publishedAt' => $post->publishedAt,
-			':image' => $post->image,
-			':totalViews' => $post->totalViews,
-			':favorites' => $post->favorites,
-			':latitude' => $post->latitude,
-			':longitude' => $post->longitude,
-			':summary' => $post->summary,
-			':body' => $post->body));
+		$stmt->execute(array(':feedsource_id' => $post['feedsource_id'],
+			':title' => $post['title'],
+			':publishedAt' => $post['publishedAt'],
+			':image' => $post['image'],
+			':totalViews' => $post['totalViews'],
+			':favorites' => $post['favorites'],
+			':latitude' => $post['latitude'],
+			':longitude' => $post['longitude'],
+			':summary' => $post['summary'],
+			':body' => $post['body']));
+		echo json_encode($post);
 	}
 }

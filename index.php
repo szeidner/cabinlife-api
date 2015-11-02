@@ -13,6 +13,7 @@ require_once __DIR__ . '/core/Router.php';
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/core/Model.php';
 require_once __DIR__ . '/model/Post.php';
+require_once __DIR__ . '/model/FeedSource.php';
 
 // Create a Router
 $router = new \Bramus\Router\Router();
@@ -37,14 +38,14 @@ $router->mount('/post', function () use ($router) {
 
 	// Route: /posts (fetch all posts)
 	$router->get('/', function () {
-		$postModel = new Posts();
+		$postModel = new Post();
 		$posts = $postModel->getAllPosts();
 		echo json_encode($posts);
 	});
 
 	// Route: /post/id (fetch a single post)
 	$router->get('/(\d+)', function ($id) {
-		$postModel = new Posts();
+		$postModel = new Post();
 		$post = $postModel->getPost($id);
 		echo json_encode($post);
 	});

@@ -83,15 +83,15 @@ foreach ($feedSources as $feedSource) {
 
 		//get 50 words and remove specific char
 		$description = trim($html->plaintext);
-		$arr = explode(' ', str_replace('* ', "", $description));
-		$i = 0;
-		$description = "";
-		foreach ($arr as $c) {
-			$i++;
-			if ($i <= 50) {
-				$description .= $c . " ";
-			}
-		}
+		// $arr = explode(' ', str_replace('* ', "", $description));
+		// $i = 0;
+		// $description = "";
+		// foreach ($arr as $c) {
+		// 	$i++;
+		// 	if ($i <= 50) {
+		// 		$description .= $c . " ";
+		// 	}
+		// }
 		$description = trim(str_replace('</img>', '', $description));
 		$description = trim(str_replace('[HTML1]', '', $description));
 
@@ -121,29 +121,22 @@ foreach ($feedSources as $feedSource) {
 		$time = strtotime($pubDate);
 		$end_date = date('Y-m-d : h:i:s', $time);
 
-		//get current datetime
-		$now = time();
-		$now_date = date('Y-m-d : h:i:s', $now);
+		if (!$postModel->postWithLinkExists($link)) {
+			//Insert data to DB
+			$post['feedsource_id'] = intval($feedSource['id']);
+			$post['title'] = $title;
+			$post['link'] = $link;
+			$post['publishedAt'] = $end_date;
+			$post['image'] = $image;
+			$post['totalViews'] = 0;
+			$post['favorites'] = 0;
+			$post['latitude'] = 0;
+			$post['longitude'] = 0;
+			$post['summary'] = $description;
+			$post['body'] = $description;
 
-		// check the link in the DB, store to DB if did not get
-		// $sql = "select * from DB-Name where ? = '" . mysql_real_escape_string($title) . "'";
-		// $rsts = mysql_query($sql) or die($sql);
-		// $count = mysql_num_rows($rsts);
-
-		//if ($count <= 0) {
-		//Insert data to DB
-		$post['feedsource_id'] = intval($feedSource['id']);
-		$post['title'] = $title;
-		$post['publishedAt'] = $end_date;
-		$post['image'] = $image;
-		$post['totalViews'] = 0;
-		$post['favorites'] = 0;
-		$post['latitude'] = 0;
-		$post['longitude'] = 0;
-		$post['summary'] = substr($description, 0, 100);
-		$post['body'] = $description;
-
-		$postModel->addPost($post);
+			$postModel->addPost($post);
+		}
 	}
 	echo "$e is done.<br>";
 }

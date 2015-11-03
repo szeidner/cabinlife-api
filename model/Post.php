@@ -19,15 +19,22 @@ class Post extends Model {
 		return $stmt->fetch(PDO::FETCH_ASSOC);
 	}
 
+	public function postWithLinkExists($link) {
+		$stmt = $this->db->prepare('SELECT * FROM post WHERE link=:link');
+		$stmt->execute(array(':link' => $link));
+		return $stmt->fetchColumn() > 0;
+	}
+
 	// add a post to the db
 	public function addPost($post) {
-		$sql = 'INSERT INTO post (feedsource_id, title, publishedAt, image, '+
-			'totalViews, favorites, latitude, longitude, summary, body) VALUES '+
-			'(:feedsource_id, :title, :publishedAt, :image, :totalView, :favorites, '+
+		$sql = 'INSERT INTO post (feedsource_id, title, link, publishedAt, image, ' .
+			'totalViews, favorites, latitude, longitude, summary, body) VALUES ' .
+			'(:feedsource_id, :title, :link, :publishedAt, :image, :totalViews, :favorites, ' .
 			':latitude, :longitude, :summary, :body)';
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute(array(':feedsource_id' => $post['feedsource_id'],
 			':title' => $post['title'],
+			':link' => $post['link'],
 			':publishedAt' => $post['publishedAt'],
 			':image' => $post['image'],
 			':totalViews' => $post['totalViews'],
@@ -36,6 +43,5 @@ class Post extends Model {
 			':longitude' => $post['longitude'],
 			':summary' => $post['summary'],
 			':body' => $post['body']));
-		echo json_encode($post);
 	}
 }

@@ -63,6 +63,10 @@ foreach ($feedSources as $feedSource) {
 		//get rss description
 		$descriptions = $entry->getElementsByTagName("description");
 		$description = $descriptions->item(0)->nodeValue;
+
+		$contents = $entry->getElementsByTagName("encoded");
+		$content = $contents->item(0)->nodeValue;
+
 		//if description Value is NULL, then Tag name "content"
 		if ($description == "") {
 			$descriptions = $entry->getElementsByTagName("content");
@@ -133,7 +137,7 @@ foreach ($feedSources as $feedSource) {
 			$post['latitude'] = 0;
 			$post['longitude'] = 0;
 			$post['summary'] = $description;
-			$post['body'] = $description;
+			$post['body'] = $content;
 
 			$postModel->addPost($post);
 		}

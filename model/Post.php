@@ -27,15 +27,16 @@ class Post extends Model {
 
 	// add a post to the db
 	public function addPost($post) {
-		$sql = 'INSERT INTO post (feedsource_id, title, link, publishedAt, image, ' .
+		$sql = 'INSERT INTO post (feedsource_id, title, link, publishedAt, updated, image, ' .
 			'totalViews, favorites, latitude, longitude, summary, body) VALUES ' .
-			'(:feedsource_id, :title, :link, :publishedAt, :image, :totalViews, :favorites, ' .
+			'(:feedsource_id, :title, :link, :publishedAt, :updated, :image, :totalViews, :favorites, ' .
 			':latitude, :longitude, :summary, :body)';
 		$stmt = $this->db->prepare($sql);
 		$stmt->execute(array(':feedsource_id' => $post['feedsource_id'],
 			':title' => $post['title'],
 			':link' => $post['link'],
 			':publishedAt' => $post['publishedAt'],
+			':updated' => $post['updated'],
 			':image' => $post['image'],
 			':totalViews' => $post['totalViews'],
 			':favorites' => $post['favorites'],

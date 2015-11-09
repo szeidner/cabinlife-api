@@ -65,7 +65,11 @@ foreach ($feedSources as $feedSource) {
 		$description = $descriptions->item(0)->nodeValue;
 
 		$contents = $entry->getElementsByTagName("encoded");
-		$content = $contents->item(0)->nodeValue;
+		if (!is_null($contents->item(0))) {
+			$content = $contents->item(0)->nodeValue;
+		} else {
+			$content = $description;
+		}
 
 		//if description Value is NULL, then Tag name "content"
 		if ($description == "") {
@@ -121,9 +125,26 @@ foreach ($feedSources as $feedSource) {
 			}
 		}
 
+		// get first image from body if there was no thumbnail tag
+		if ($image == "") {
+			$bodydoc = new DOMDocument();
+			libxml_use_internal_errors(true); // suppress errors
+			$bodydoc->loadHTML($content);
+			libxml_use_internal_errors(false);
+			$images = $bodydoc->getElementsByTagName('img');
+			if (!is_null($images->item(0))) {
+				$image = $images->item(0)->getAttribute('src');
+			}
+		}
+
 		//convert datetime to normal datetime
-		$time = strtotime($pubDate);
-		$end_date = date('Y-m-d : h:i:s', $time);
+		$time = new DateTime($pubDate);
+		$end_date = $time->format('Y-m-d h:i:s');
+
+		$now = date('Y-m-d H:i:s');
+
+		// $time = strtotime($pubDate);
+		// $end_date = datetime('Y-m-d : h:i:s', $time);
 
 		if (!$postModel->postWithLinkExists($link)) {
 			//Insert data to DB
@@ -131,6 +152,7 @@ foreach ($feedSources as $feedSource) {
 			$post['title'] = $title;
 			$post['link'] = $link;
 			$post['publishedAt'] = $end_date;
+			$post['updated'] = $now;
 			$post['image'] = $image;
 			$post['totalViews'] = 0;
 			$post['favorites'] = 0;

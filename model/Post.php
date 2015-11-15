@@ -7,7 +7,7 @@ class Post extends Model {
 
 	// get all posts from the database
 	public function getAllPosts() {
-		$stmt = $this->db->prepare('SELECT * FROM post');
+		$stmt = $this->db->prepare('SELECT * FROM post ORDER BY publishedAt DESC');
 		$stmt->execute();
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
 	}

@@ -7,6 +7,7 @@ ini_set('display_errors', true);
 date_default_timezone_set('America/New_York');
 
 require_once __DIR__ . '/dom.php'; # for PHP 5.3+
+require_once __DIR__ . '/html2text.php';
 require_once __DIR__ . '/../includes/config.php';
 require_once __DIR__ . '/../core/Model.php';
 require_once __DIR__ . '/../model/FeedSource.php';
@@ -50,7 +51,7 @@ foreach ($feedSources as $feedSource) {
 
 		//get rss title
 		$titles = $entry->getElementsByTagName("title");
-		$title = $titles->item(0)->nodeValue;
+		$title = trim($titles->item(0)->nodeValue);
 
 		//get rss link
 		$links = $entry->getElementsByTagName("link");
@@ -133,7 +134,11 @@ foreach ($feedSources as $feedSource) {
 			libxml_use_internal_errors(false);
 			$images = $bodydoc->getElementsByTagName('img');
 			if (!is_null($images->item(0))) {
-				$image = $images->item(0)->getAttribute('src');
+				if (strpos($e, "websta.me") !== false) {
+					$image = $images->item(1)->getAttribute('src');
+				} else {
+					$image = $images->item(0)->getAttribute('src');
+				}
 			}
 		}
 
@@ -159,7 +164,7 @@ foreach ($feedSources as $feedSource) {
 			$post['latitude'] = 0;
 			$post['longitude'] = 0;
 			$post['summary'] = $description;
-			$post['body'] = $content;
+			$post['body'] = convert_html_to_text($content);
 
 			$postModel->addPost($post);
 		}
